@@ -1,13 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import Illustration from "../components/Illustration";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
+import { login } from "../lib/api";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -79,6 +84,22 @@ export default function LoginPage() {
     </svg>
   );
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await login(username, password);
+      // For demo, we accept any login since the API might mock it
+      if (result.success) {
+        router.push("/inventory");
+      } else {
+        alert("Login failed");
+      }
+    } catch (error) {
+      console.error("Login handling error:", error);
+      alert("An error occurred");
+    }
+  };
+
   return (
     <div className={styles.container}>
       {/* Left Panel - Illustration */}
@@ -98,12 +119,14 @@ export default function LoginPage() {
           <div className={styles.card}>
             <h2 className={styles.cardTitle}>Sign in to your account</h2>
 
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={handleSubmit}>
               <Input
                 id="username"
                 label="Username"
                 placeholder="Enter your username"
                 icon={UserIcon}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
 
               <Input
@@ -112,6 +135,8 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 icon={EyeIcon}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
 
               <div className={styles.actions}>
