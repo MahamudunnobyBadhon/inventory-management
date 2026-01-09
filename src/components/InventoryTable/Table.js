@@ -2,7 +2,6 @@
 
 import styles from "./Table.module.css";
 import Row from "./Row";
-import Pagination from "./Pagination";
 import Checkbox from "../Checkbox";
 
 const Table = ({ items }) => {
@@ -25,8 +24,6 @@ const Table = ({ items }) => {
           <Row key={item.id} item={item} />
         ))}
       </div>
-
-      <Pagination />
     </div>
   );
 };
