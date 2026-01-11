@@ -11,6 +11,7 @@ export default function LocationsPage() {
   const [selectedId, setSelectedId] = useState(null);
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [viewMode, setViewMode] = useState("tree"); // "tree" or "list"
+  const [isSelectorOpen, setIsSelectorOpen] = useState(false);
 
   const { data: locationsData, isLoading: isLocLoading } = useLocations();
   const { data: treeData, isLoading: isTreeLoading } = useLocationsTree();
@@ -68,7 +69,10 @@ export default function LocationsPage() {
               isSelected ? styles.activeItem : ""
             }`}
             style={{ paddingLeft: `${12 + level * 16}px` }}
-            onClick={() => setSelectedId(node.id)}
+            onClick={() => {
+              setSelectedId(node.id);
+              setIsSelectorOpen(false);
+            }}
           >
             <span className={styles.itemIcon}>
               {hasChildren ? (
@@ -115,8 +119,28 @@ export default function LocationsPage() {
       />
 
       <div className={styles.container}>
+        {/* Mobile Selection Button */}
+        <button
+          className={styles.mobileSelectBtn}
+          onClick={() => setIsSelectorOpen(true)}
+        >
+          <HomeIcon size={18} />
+          <span>
+            {selectedLocation ? selectedLocation.name : "Select Location"}
+          </span>
+          <ChevronDown size={16} />
+        </button>
+
         {/* Left Sidebar */}
-        <div className={styles.sidebar}>
+        <div
+          className={`${styles.sidebar} ${
+            isSelectorOpen ? styles.sidebarOpen : ""
+          }`}
+        >
+          <div className={styles.sidebarHeader}>
+            <h3>Locations</h3>
+            <button onClick={() => setIsSelectorOpen(false)}>×</button>
+          </div>
           <div className={styles.scrollArea}>
             <div className={styles.searchBox}>
               <input
@@ -190,7 +214,10 @@ export default function LocationsPage() {
                     className={`${styles.locationItem} ${
                       selectedId === loc.id ? styles.activeItem : ""
                     }`}
-                    onClick={() => setSelectedId(loc.id)}
+                    onClick={() => {
+                      setSelectedId(loc.id);
+                      setIsSelectorOpen(false);
+                    }}
                   >
                     <span className={styles.itemIcon}>
                       <HomeIcon size={18} />
@@ -210,7 +237,10 @@ export default function LocationsPage() {
                     className={`${styles.locationItem} ${
                       selectedId === loc.id ? styles.activeItem : ""
                     }`}
-                    onClick={() => setSelectedId(loc.id)}
+                    onClick={() => {
+                      setSelectedId(loc.id);
+                      setIsSelectorOpen(false);
+                    }}
                   >
                     <span className={styles.itemIcon}>
                       <HomeIcon size={18} />

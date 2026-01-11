@@ -10,7 +10,14 @@ export default function ReportsPage() {
         title="Reports"
         addButtonText="Export Report"
       />
-      <div style={{ padding: "32px", flex: 1, backgroundColor: "#f9fafb" }}>
+      <div
+        style={{
+          padding: "32px",
+          flex: 1,
+          backgroundColor: "#f9fafb",
+          overflowY: "auto",
+        }}
+      >
         <div
           style={{
             backgroundColor: "#fff",
