@@ -119,6 +119,24 @@
   margin: 0 8px;
 }
 
+@media (max-width: 640px) {
+  .rightPanel {
+    padding: 24px;
+  }
+  
+  .card {
+    padding: 24px 16px;
+    border: none;
+    box-shadow: none;
+  }
+
+  .footer {
+    position: static;
+    margin-top: 40px;
+    padding-bottom: 20px;
+  }
+}
+
 @media (min-width: 1024px) {
   .leftPanel {
     display: block;

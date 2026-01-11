@@ -4,12 +4,29 @@
   background-color: #f9fafb;
 }
 
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - 64px);
+  }
+}
+
 .sidebar {
   width: 320px;
   background-color: white;
   border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    max-height: 400px;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
 }
 
 .scrollArea {
@@ -103,6 +120,12 @@
   overflow-y: auto;
 }
 
+@media (max-width: 900px) {
+  .detailsPanel {
+    padding: 16px;
+  }
+}
+
 .card {
   background-color: white;
   border-radius: 12px;
@@ -116,6 +139,13 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 24px;
+}
+
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    gap: 16px;
+  }
 }
 
 .headerLeft {
@@ -207,6 +237,13 @@
   gap: 24px;
   border-top: 1px solid #f3f4f6;
   padding-top: 24px;
+}
+
+@media (max-width: 600px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 .statItem span {

@@ -4,63 +4,79 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import styles from './Sidebar.module.css';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
   const pathname = usePathname();
 
   const navItems = [
-    { name: 'Inventory', href: '/inventory', icon: <InventoryIcon /> },
-    { name: 'Locations', href: '/inventory/locations', icon: <LocationIcon /> },
-    { name: 'Labels', href: '/inventory/labels', icon: <TagIcon /> },
-    { name: 'Reports', href: '/inventory/reports', icon: <ChartIcon /> },
-    { name: 'Settings', href: '/inventory/settings', icon: <SettingsIcon /> },
+    { name: "Inventory", href: "/inventory", icon: <InventoryIcon /> },
+    { name: "Locations", href: "/inventory/locations", icon: <LocationIcon /> },
+    { name: "Labels", href: "/inventory/labels", icon: <TagIcon /> },
+    { name: "Reports", href: "/inventory/reports", icon: <ChartIcon /> },
+    { name: "Settings", href: "/inventory/settings", icon: <SettingsIcon /> },
   ];
 
   return (
-    <aside className={styles.sidebar} suppressHydrationWarning>
-      <div className={styles.logoContainer} suppressHydrationWarning>
-        <div className={styles.logoIcon} suppressHydrationWarning>
-          <InventoryIcon color="white" />
-        </div>
-        <div className={styles.logoText} suppressHydrationWarning>
-          <h1 className={styles.brandName}>Home Inventory</h1>
-          <span className={styles.brandSub}>Manage your items</span>
-        </div>
-      </div>
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && <div className={styles.overlay} onClick={onClose} />}
 
-      <nav className={styles.nav} suppressHydrationWarning>
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`${styles.navItem} ${isActive ? styles.active : ""}`}
-            >
-              <span className={styles.icon}>{item.icon}</span>
-              {item.name}
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className={styles.profile} suppressHydrationWarning>
-        <img
-          src="/avatar.png"
-          alt="Profile"
-          className={styles.avatar}
-          onError={(e) => (e.target.style.display = "none")}
-        />
-        <div className={styles.profileInfo} suppressHydrationWarning>
-          <div className={styles.userName} suppressHydrationWarning>
-            John Smith
+      <aside
+        className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}
+        suppressHydrationWarning
+      >
+        <div className={styles.logoContainer} suppressHydrationWarning>
+          <div className={styles.logoIcon} suppressHydrationWarning>
+            <InventoryIcon color="white" />
           </div>
-          <div className={styles.userEmail} suppressHydrationWarning>
-            john@example.com
+          <div
+            className={styles.logoText}
+            suppressHydrationWarning
+            style={{ flex: 1 }}
+          >
+            <h1 className={styles.brandName}>Home Inventory</h1>
+            <span className={styles.brandSub}>Manage your items</span>
           </div>
+          <button className={styles.closeSidebarBtn} onClick={onClose}>
+            ×
+          </button>
         </div>
-        <button className={styles.moreButton}>⋮</button>
-      </div>
-    </aside>
+
+        <nav className={styles.nav} suppressHydrationWarning>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`${styles.navItem} ${isActive ? styles.active : ""}`}
+                onClick={onClose}
+              >
+                <span className={styles.icon}>{item.icon}</span>
+                {item.name}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className={styles.profile} suppressHydrationWarning>
+          <img
+            src="/avatar.png"
+            alt="Profile"
+            className={styles.avatar}
+            onError={(e) => (e.target.style.display = "none")}
+          />
+          <div className={styles.profileInfo} suppressHydrationWarning>
+            <div className={styles.userName} suppressHydrationWarning>
+              John Smith
+            </div>
+            <div className={styles.userEmail} suppressHydrationWarning>
+              john@example.com
+            </div>
+          </div>
+          <button className={styles.moreButton}>⋮</button>
+        </div>
+      </aside>
+    </>
   );
 };
 
