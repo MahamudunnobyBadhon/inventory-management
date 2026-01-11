@@ -3,24 +3,29 @@
 import Button from "../Button";
 import styles from "./Topbar.module.css";
 
-const Topbar = ({ onSearch }) => {
+const Topbar = ({
+  onSearch,
+  onExport,
+  title = "Inventory",
+  addButtonText = "+ Add Item",
+}) => {
   return (
-    <div className={styles.topbar}>
-      <h2 className={styles.title}>Inventory</h2>
-      <div className={styles.actions}>
-        <div className={styles.searchWrapper}>
+    <div className={styles.topbar} suppressHydrationWarning>
+      <h2 className={styles.title}>{title}</h2>
+      <div className={styles.actions} suppressHydrationWarning>
+        <div className={styles.searchWrapper} suppressHydrationWarning>
           <span className={styles.searchIcon}>🔍</span>
           <input
             type="text"
-            placeholder="Search items..."
+            placeholder={`Search ${title.toLowerCase()}...`}
             className={styles.searchInput}
             onChange={(e) => onSearch && onSearch(e.target.value)}
           />
         </div>
-        <button className={styles.exportButton}>
+        <button className={styles.exportButton} onClick={onExport}>
           <span style={{ marginRight: "8px" }}>📥</span> Export
         </button>
-        <Button onClick={() => {}}>+ Add Item</Button>
+        <Button onClick={() => {}}>{addButtonText}</Button>
       </div>
     </div>
   );

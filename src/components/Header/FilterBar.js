@@ -2,10 +2,10 @@
 
 import styles from "./FilterBar.module.css";
 
-const FilterBar = () => {
+const FilterBar = ({ itemCount = 0 }) => {
   return (
-    <div className={styles.filterBar}>
-      <div className={styles.filters}>
+    <div className={styles.filterBar} suppressHydrationWarning>
+      <div className={styles.filters} suppressHydrationWarning>
         <span className={styles.label}>Filters:</span>
         <button className={`${styles.filterChip} ${styles.filterChipActive}`}>
           All Locations <span className={styles.close}>×</span>
@@ -15,8 +15,8 @@ const FilterBar = () => {
         </button>
         <button className={styles.addFilter}>+ Add Filter</button>
       </div>
-      <div className={styles.stats}>
-        <span className={styles.itemCount}>248 items</span>
+      <div className={styles.stats} suppressHydrationWarning>
+        <span className={styles.itemCount}>{itemCount} items</span>
         <button className={styles.sortButton}>⇅ Sort: Updated</button>
       </div>
     </div>

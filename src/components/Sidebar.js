@@ -16,25 +16,25 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.logoContainer}>
-        <div className={styles.logoIcon}>
+    <aside className={styles.sidebar} suppressHydrationWarning>
+      <div className={styles.logoContainer} suppressHydrationWarning>
+        <div className={styles.logoIcon} suppressHydrationWarning>
           <InventoryIcon color="white" />
         </div>
-        <div className={styles.logoText}>
+        <div className={styles.logoText} suppressHydrationWarning>
           <h1 className={styles.brandName}>Home Inventory</h1>
           <span className={styles.brandSub}>Manage your items</span>
         </div>
       </div>
 
-      <nav className={styles.nav}>
+      <nav className={styles.nav} suppressHydrationWarning>
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <Link 
-              key={item.name} 
+            <Link
+              key={item.name}
               href={item.href}
-              className={`${styles.navItem} ${isActive ? styles.active : ''}`}
+              className={`${styles.navItem} ${isActive ? styles.active : ""}`}
             >
               <span className={styles.icon}>{item.icon}</span>
               {item.name}
@@ -43,11 +43,20 @@ const Sidebar = () => {
         })}
       </nav>
 
-      <div className={styles.profile}>
-        <img src="/avatar.png" alt="Profile" className={styles.avatar} onError={(e) => e.target.style.display = 'none'} />
-        <div className={styles.profileInfo}>
-          <div className={styles.userName}>John Smith</div>
-          <div className={styles.userEmail}>john@example.com</div>
+      <div className={styles.profile} suppressHydrationWarning>
+        <img
+          src="/avatar.png"
+          alt="Profile"
+          className={styles.avatar}
+          onError={(e) => (e.target.style.display = "none")}
+        />
+        <div className={styles.profileInfo} suppressHydrationWarning>
+          <div className={styles.userName} suppressHydrationWarning>
+            John Smith
+          </div>
+          <div className={styles.userEmail} suppressHydrationWarning>
+            john@example.com
+          </div>
         </div>
         <button className={styles.moreButton}>⋮</button>
       </div>

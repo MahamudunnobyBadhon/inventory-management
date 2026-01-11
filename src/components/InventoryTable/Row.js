@@ -35,8 +35,13 @@ const Row = ({ item }) => {
         </div>
       </div>
       <div className={styles.colLocation}>
-        {item.location} <span className={styles.separator}>&gt;</span>{" "}
-        {item.subLocation}
+        {item.location}
+        {item.subLocation && (
+          <>
+            {" "}
+            <span className={styles.separator}>&gt;</span> {item.subLocation}
+          </>
+        )}
       </div>
       <div className={styles.colLabels}>
         {item.labels.map((label) => (

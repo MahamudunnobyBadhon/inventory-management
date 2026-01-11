@@ -16,11 +16,16 @@ export const metadata = {
   description: "Track and organize your things",
 };
 
+import Providers from "@/components/Providers";
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable}`}
+        suppressHydrationWarning
+      >
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

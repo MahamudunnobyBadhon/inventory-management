@@ -1,61 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Topbar from "../../components/Header/Topbar";
 import FilterBar from "../../components/Header/FilterBar";
 import Table from "../../components/InventoryTable/Table";
 import Pagination from "../../components/InventoryTable/Pagination";
-import { getItems } from "../../lib/api";
+import { useItems } from "../../lib/hooks";
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 10;
 
 export default function InventoryPage() {
-  const [allItems, setAllItems] = useState([]); // Store all fetched items
-  const [displayedItems, setDisplayedItems] = useState([]); // Items for current page
-  const [loading, setLoading] = useState(true);
-
-  // Filter States
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    async function loadItems() {
-      try {
-        const data = await getItems();
-        const list = Array.isArray(data) ? data : data.items || [];
-        setAllItems(list);
-      } catch (e) {
-        console.error("Failed to load items", e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadItems();
-  }, []);
+  const { data, isLoading, error } = useItems(
+    currentPage,
+    ITEMS_PER_PAGE,
+    searchQuery
+  );
 
-  // Handle Filtering and Pagination
-  useEffect(() => {
-    let filtered = allItems;
-
-    // Search Logic
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (item) =>
-          (item.name && item.name.toLowerCase().includes(query)) ||
-          (item.model && item.model.toLowerCase().includes(query)) ||
-          (item.location && item.location.toLowerCase().includes(query))
-      );
-    }
-
-    setTotalItems(filtered.length);
-
-    // Pagination Logic
-    const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIdx = startIdx + ITEMS_PER_PAGE;
-    setDisplayedItems(filtered.slice(startIdx, endIdx));
-  }, [allItems, searchQuery, currentPage]);
+  // API returns { items: [...], total: ..., page: ..., pageSize: ... }
+  // Provide fallback for initial load or error
+  const items = data?.items || [];
+  const totalItems = data?.total || 0;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -63,17 +31,53 @@ export default function InventoryPage() {
   };
 
   const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= Math.ceil(totalItems / ITEMS_PER_PAGE)) {
+    if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
   };
 
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const handleExport = () => {
+    const headers = [
+      "ID",
+      "Name",
+      "Asset ID",
+      "Location",
+      "Quantity",
+      "Created At",
+    ];
+    const csvRows = [headers.join(",")];
+
+    items.forEach((item) => {
+      const row = [
+        item.id,
+        `"${item.name}"`,
+        item.assetId,
+        `"${item.location?.name || ""}"`,
+        item.quantity,
+        item.createdAt,
+      ];
+      csvRows.push(row.join(","));
+    });
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `inventory_export_${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <Topbar onSearch={handleSearch} />
-      <FilterBar totalItems={totalItems} />
+      <Topbar onSearch={handleSearch} onExport={handleExport} />
+      <FilterBar itemCount={totalItems} />
       <div
         style={{
           padding: "0",
@@ -82,16 +86,25 @@ export default function InventoryPage() {
           display: "flex",
           flexDirection: "column",
         }}
+        suppressHydrationWarning
       >
-        {loading ? (
+        {isLoading ? (
           <div
             style={{ padding: "40px", textAlign: "center", color: "#6b7280" }}
+            suppressHydrationWarning
           >
             Loading inventory...
           </div>
+        ) : error ? (
+          <div
+            style={{ padding: "40px", textAlign: "center", color: "#ef4444" }}
+            suppressHydrationWarning
+          >
+            Error loading inventory: {error.message}
+          </div>
         ) : (
           <>
-            <Table items={displayedItems} />
+            <Table items={items} />
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

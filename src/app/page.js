@@ -7,7 +7,7 @@ import Illustration from "../components/Illustration";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
-import { login } from "../lib/api";
+import { useLogin } from "../lib/hooks";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,6 +15,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const { mutate: login, isLoading } = useLogin();
 
   // SVG Icons
   const UserIcon = (
@@ -84,20 +86,26 @@ export default function LoginPage() {
     </svg>
   );
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const result = await login(username, password);
-      // For demo, we accept any login since the API might mock it
-      if (result.success) {
-        router.push("/inventory");
-      } else {
-        alert("Login failed");
+    login(
+      { username, password, stayLoggedIn: rememberMe },
+      {
+        onSuccess: (data) => {
+          if (data && (data.token || data.attachmentToken)) {
+            // Token is already stored in api.js, just redirect
+            router.push("/inventory");
+          } else {
+            console.warn("Login successful but no token in response", data);
+            router.push("/inventory"); // Fallback for demo
+          }
+        },
+        onError: (error) => {
+          console.error("Login handling error:", error);
+          alert("Login failed: " + error.message);
+        },
       }
-    } catch (error) {
-      console.error("Login handling error:", error);
-      alert("An error occurred");
-    }
+    );
   };
 
   return (
